@@ -7,145 +7,136 @@
     <style>
         :root {
             --glass: rgba(255, 255, 255, 0.1);
-            --blur: blur(25px);
-            --border: rgba(255, 255, 255, 0.15);
-            --accent: #ffb7c5;
+            --border: rgba(255, 255, 255, 0.2);
         }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #0d0d0d;
+            background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
             height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            color: white;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000 100%);
+            color: white;
         }
 
-        /* تأثير الـ Liquid Glass للبطاقة */
         .container {
-            width: 320px;
             background: var(--glass);
-            backdrop-filter: var(--blur);
-            -webkit-backdrop-filter: var(--blur);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border: 1px solid var(--border);
-            border-radius: 35px;
-            padding: 45px 25px;
+            padding: 40px 20px;
+            border-radius: 30px;
+            width: 85%;
+            max-width: 400px;
             text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            animation: fadeIn 1.2s ease-out;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .profile-img {
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            border: 2px solid var(--accent);
-            margin-bottom: 20px;
+            border: 3px solid #fff;
             object-fit: cover;
-            box-shadow: 0 0 20px rgba(255, 183, 197, 0.3);
+            margin-bottom: 15px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
         }
 
-        h1 {
-            font-size: 3rem;
-            margin: 10px 0;
-            background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+        h1 { font-size: 1.8rem; margin-bottom: 5px; letter-spacing: 1px; }
+        p { opacity: 0.8; font-size: 0.9rem; margin-bottom: 25px; }
+
+        #timer {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #fff, #8e9eab);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 800;
+            margin: 20px 0;
+            display: block;
         }
 
-        .view-count {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 8px 18px;
-            border-radius: 50px;
+        .music-status {
             font-size: 0.8rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 35px;
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #aaa;
-        }
-
-        /* مشغل الموسيقى الأنيق */
-        .music-player {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 25px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .music-player:hover {
-            background: rgba(255, 183, 197, 0.1);
-        }
-
-        .status-text {
-            font-size: 0.7rem;
-            color: var(--accent);
+            color: #00ffcc;
+            margin-top: 10px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+        .footer-text {
+            margin-top: 30px;
+            font-size: 0.7rem;
+            opacity: 0.5;
         }
     </style>
 </head>
-<body>
+<body onclick="handleInteraction()">
 
     <div class="container">
         <img src="image.png" alt="Roven" class="profile-img">
+        
+        <h1>ROVEN</h1>
+        <p>Welcome to my space</p>
 
-        <h1>ℛℴ𝓋ℯ𝓃</h1>
+        <div id="timer">00:00:00</div>
+        
+        <div class="music-status" id="status">اضغط لتشغيل Kyomi 🎵</div>
 
-        <div class="view-count">
-            <span style="color: var(--accent);">●</span>
-            <span id="count">0</span> views
-        </div>
-
-        <div class="music-player" id="playBtn">
-            <div class="status-text" id="status">اضغط لتشغيل Kiyomi 🎵</div>
-            <audio id="audio" loop>
-                <source src="https://files.catbox.moe/v0856k.mp3" type="audio/mpeg">
-            </audio>
-        </div>
+        <div class="footer-text">Created by Roven99 • 2026</div>
     </div>
 
+    <audio id="kyomi" loop>
+        <source src="https://www.myinstants.com/media/sounds/kyomi-song.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
-        // 1. عداد المشاهدات الحقيقي (يعمل فوراً على Netlify)
-        function updateViews() {
-            let count = localStorage.getItem('roven_views') || 542; // رقم بداية افتراضي
-            count = parseInt(count) + 1;
-            localStorage.setItem('roven_views', count);
-            document.getElementById('count').innerText = count.toLocaleString();
+        // كود العداد التصاعدي
+        let startTime = Date.now();
+        const timerElement = document.getElementById('timer');
+
+        function updateTimer() {
+            let now = Date.now();
+            let diff = now - startTime;
+
+            let h = Math.floor(diff / 3600000);
+            let m = Math.floor((diff % 3600000) / 60000);
+            let s = Math.floor((diff % 60000) / 1000);
+
+            h = h < 10 ? '0' + h : h;
+            m = m < 10 ? '0' + m : m;
+            s = s < 10 ? '0' + s : s;
+
+            timerElement.innerHTML = `${h}:${m}:${s}`;
         }
-        updateViews();
 
-        // 2. التحكم في الموسيقى (التشغيل عند الضغط)
-        const audio = document.getElementById('audio');
-        const playBtn = document.getElementById('playBtn');
-        const status = document.getElementById('status');
+        setInterval(updateTimer, 1000);
 
-        playBtn.onclick = function() {
-            if (audio.paused) {
-                audio.play();
-                status.innerText = "Playing: Kiyomi Song 🌸";
-                playBtn.style.borderColor = "var(--accent)";
-            } else {
-                audio.pause();
-                status.innerText = "Paused ⏸️";
-                playBtn.style.borderColor = "var(--border)";
+        // وظيفة تشغيل الموسيقى عند أول لمسة (لحل مشكلة الأيفون)
+        let isPlaying = false;
+        function handleInteraction() {
+            const audio = document.getElementById('kyomi');
+            const status = document.getElementById('status');
+            
+            if (!isPlaying) {
+                audio.play().then(() => {
+                    isPlaying = true;
+                    status.innerHTML = "Playing: Kyomi Song 🎶";
+                }).catch(error => {
+                    console.log("تعذر التشغيل التلقائي:", error);
+                });
             }
-        };
+        }
     </script>
-
 </body>
 </html>
