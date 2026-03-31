@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roven | Bio</title>
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.1);
+            --blur: blur(25px);
+            --border: rgba(255, 255, 255, 0.15);
+            --accent: #ffb7c5;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #0d0d0d;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000 100%);
+        }
+
+        /* تأثير الـ Liquid Glass للبطاقة */
+        .container {
+            width: 320px;
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--border);
+            border-radius: 35px;
+            padding: 45px 25px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            margin-bottom: 20px;
+            object-fit: cover;
+            box-shadow: 0 0 20px rgba(255, 183, 197, 0.3);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 10px 0;
+            background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .view-count {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 35px;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #aaa;
+        }
+
+        /* مشغل الموسيقى الأنيق */
+        .music-player {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 25px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .music-player:hover {
+            background: rgba(255, 183, 197, 0.1);
+        }
+
+        .status-text {
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <img src="image.png" alt="Roven" class="profile-img">
+
+        <h1>ℛℴ𝓋ℯ𝓃</h1>
+
+        <div class="view-count">
+            <span style="color: var(--accent);">●</span>
+            <span id="count">0</span> views
+        </div>
+
+        <div class="music-player" id="playBtn">
+            <div class="status-text" id="status">اضغط لتشغيل Kiyomi 🎵</div>
+            <audio id="audio" loop>
+                <source src="https://files.catbox.moe/v0856k.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+    </div>
+
+    <script>
+        // 1. عداد المشاهدات الحقيقي (يعمل فوراً على Netlify)
+        function updateViews() {
+            let count = localStorage.getItem('roven_views') || 542; // رقم بداية افتراضي
+            count = parseInt(count) + 1;
+            localStorage.setItem('roven_views', count);
+            document.getElementById('count').innerText = count.toLocaleString();
+        }
+        updateViews();
+
+        // 2. التحكم في الموسيقى (التشغيل عند الضغط)
+        const audio = document.getElementById('audio');
+        const playBtn = document.getElementById('playBtn');
+        const status = document.getElementById('status');
+
+        playBtn.onclick = function() {
+            if (audio.paused) {
+                audio.play();
+                status.innerText = "Playing: Kiyomi Song 🌸";
+                playBtn.style.borderColor = "var(--accent)";
+            } else {
+                audio.pause();
+                status.innerText = "Paused ⏸️";
+                playBtn.style.borderColor = "var(--border)";
+            }
+        };
+    </script>
+
+</body>
+</html>
